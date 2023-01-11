@@ -104,6 +104,9 @@ pub enum MyxSerialReceiveState<'a> {
 }
 
 pub fn checksum(data: &[u8]) -> u8 {
+    if data.len() > 0xff {
+        panic!("Data length should be less than 256");
+    }
     let mut result: u16 = 0;
     for i in 0..data.len() {
         result += data[i] as u16;
@@ -113,10 +116,13 @@ pub fn checksum(data: &[u8]) -> u8 {
     (result & 0xff) as u8
 }
 
-pub fn checksum_id_len(id: u8, len: u8, data: &[u8]) -> u8 {
+pub fn checksum_raw(id: u8, data: &[u8]) -> u8 {
+    if data.len() > 0xff {
+        panic!("Data length should be less than 256");
+    }
     let mut result: u16 = 0;
     result += id as u16;
-    result += len as u16;
+    result += data.len() as u16;
     for i in 0..data.len() {
         result += data[i] as u16;
     }
@@ -134,5 +140,5 @@ pub fn send(id: u8, data: &[u8], mut sender: impl FnMut(u8)) {
     for i in 0..data.len() {
         sender(data[i]);
     }
-    sender(checksum_id_len(id, data.len() as u8, data));
+    sender(checksum_raw(id, data));
 }

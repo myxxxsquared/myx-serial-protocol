@@ -1,6 +1,6 @@
 pub mod myxserial;
 
-pub use myxserial::{checksum, checksum_id_len, send, MyxSerialReceiveState, MyxSerialReceiver};
+pub use myxserial::{checksum, checksum_raw, send, MyxSerialReceiveState, MyxSerialReceiver};
 
 #[cfg(test)]
 mod test;
